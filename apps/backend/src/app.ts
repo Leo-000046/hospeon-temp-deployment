@@ -7,7 +7,7 @@ import { env } from './config/env';
 
 const app = express();
 
-app.use(cors({ origin: env.CORS_ORIGIN }));
+app.use(cors({ origin: env.CORS_ORIGIN || '*' }));
 app.use(express.json());
 app.use(httpLogger);
 

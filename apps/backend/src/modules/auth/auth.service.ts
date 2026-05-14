@@ -1,10 +1,19 @@
 import { authRepository } from './auth.repository';
-import { RegisterDto, LoginDto, AuthResponseDto } from '@hospeon/shared';
+import { RegisterDto, LoginDto, AuthResponseDto, Role } from '@hospeon/shared';
 import { AppError } from '../../utils/app-error';
 import { hashPassword, comparePassword } from '../../utils/password.util';
 import { generateToken } from '../../utils/jwt.util';
 
 export class AuthService {
+  private toAuthUser(user: { id: string; name: string; email: string; role: string }) {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role as Role,
+    };
+  }
+
   async register(data: RegisterDto): Promise<AuthResponseDto> {
     const existingUser = await authRepository.findUserByEmail(data.email);
     if (existingUser) {
@@ -20,12 +29,7 @@ export class AuthService {
     const accessToken = generateToken({ userId: user.id, role: user.role });
 
     return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: this.toAuthUser(user),
       accessToken,
     };
   }
@@ -48,12 +52,7 @@ export class AuthService {
     const accessToken = generateToken({ userId: user.id, role: user.role });
 
     return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: this.toAuthUser(user),
       accessToken,
     };
   }
