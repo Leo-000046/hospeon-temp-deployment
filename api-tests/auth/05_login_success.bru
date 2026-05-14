@@ -1,0 +1,39 @@
+meta {
+  name: Login - Success
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@hospeon.com",
+    "password": "Admin@123"
+  }
+}
+
+tests {
+  test("status is 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("success is true", function() {
+    expect(res.body.success).to.equal(true);
+  });
+  test("accessToken is a valid JWT (3 parts)", function() {
+    const token = res.body.data?.accessToken;
+    expect(token).to.be.a("string");
+    expect(token.split(".").length).to.equal(3);
+    bru.setVar("accessToken", token);
+  });
+  test("user role is present", function() {
+    expect(res.body.data.user.role).to.be.a("string");
+  });
+  test("password is NOT exposed", function() {
+    expect(res.body.data.user).to.not.have.property("password");
+  });
+}

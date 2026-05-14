@@ -1,0 +1,27 @@
+meta {
+  name: Login - Fail (Non-existent Email)
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "ghost@hospeon.com",
+    "password": "Admin@123"
+  }
+}
+
+tests {
+  test("status is 401 Unauthorized", function() {
+    expect(res.status).to.equal(401);
+  });
+  test("same generic message as wrong password (prevents user enumeration)", function() {
+    expect(res.body.message).to.equal("Invalid email or password");
+  });
+}

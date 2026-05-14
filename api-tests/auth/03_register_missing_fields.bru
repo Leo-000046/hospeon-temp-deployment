@@ -1,0 +1,29 @@
+meta {
+  name: Register - Fail (Missing Fields)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "missing_name@hospeon.com"
+  }
+}
+
+tests {
+  test("status is 400 Bad Request", function() {
+    expect(res.status).to.equal(400);
+  });
+  test("success is false", function() {
+    expect(res.body.success).to.equal(false);
+  });
+  test("validation error message present", function() {
+    expect(res.body.message).to.be.a("string");
+  });
+}
