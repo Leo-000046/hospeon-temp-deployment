@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(RECEPTIONIST)
+  isActive  Boolean   @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+}
+
+model Patient {
+  id        String    @id @default(uuid())
+  firstName String
+  lastName  String
+  dob       DateTime
+  contact   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  RECEPTIONIST
+  LAB_TECHNICIAN
+  NURSE
+  PHARMACIST
+  ACCOUNTANT
+  STAFF
+}
